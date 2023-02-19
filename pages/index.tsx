@@ -38,6 +38,7 @@ export default function Home() {
             <div id={styles.animes}>
 
                 {animes.map((anime) => (
+                    // eslint-disable-next-line react/jsx-key
                     <div className={styles.anime}>
                         <img src={anime.url} />
                         <h1>{anime.titulo}</h1>
@@ -48,20 +49,22 @@ export default function Home() {
             </div>
 
             {/* <!-- MODAL PARA CONFIRMAR VOTO --> */}
-            {animeSelecionado && <div id={styles.votar}>
-                <div id={styles.votar}>
-                    <div id={styles.voto_container}>
-                        <h1>Você votou em: <br/><b>{animeSelecionado.titulo}</b></h1>
-                        <p>Informe o seu email para confirmar seu voto: </p>
-                        <input type="email" name="email" placeholder="Digite seu email"/>
-                        <p id={styles.voto_erro}>Informe um email!</p>
-                        <div id={styles.voto_opc}>
-                            <button id={styles.btn_voltar} onClick={handleVotacao}>Votar</button>
-                            <button id={styles.btn_cancelar} onClick={() => setAnimeSelecionado(null)}>Cancelar</button>
+            {
+                animeSelecionado && <div id={styles.votar}>
+                    <div id={styles.votar}>
+                        <div id={styles.voto_container}>
+                            <h1>Você votou em: <br/><b>{animeSelecionado.titulo}</b></h1>
+                            <p>Informe o seu email para confirmar seu voto: </p>
+                            <input type="email" name="email" placeholder="Digite seu email"/>
+                            <p id={styles.voto_erro}>Informe um email!</p>
+                            <div id={styles.voto_opc}>
+                                <button id={styles.btn_voltar} onClick={handleVotacao}>Votar</button>
+                                <button id={styles.btn_cancelar} onClick={() => setAnimeSelecionado(null)}>Cancelar</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>}
+            }
 
     </MainTemplate>
            
