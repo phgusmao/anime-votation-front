@@ -1,31 +1,36 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
 import { Anime } from '../models/anime'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import MainTemplate from '../templates/main'
 import styles from './../styles/Home.module.css'
 import { useRouter } from 'next/router'
+import Axios from 'axios';
 
-export default function Home() {
+export default  function Home() {
 
-    const [animes, setAnimes] = useState<Anime[]>([
-        {
-            id: 1, titulo: 'Rankin of Kings', url: 'https://www.crunchyroll.com/imgsrv/display/thumbnail/480x720/catalog/crunchyroll/b0e25e68ede7bd9f8d6a8f49812e88bc.jpe'
-        },
-        {
-            id: 2, titulo: 'Bleach', url: 'https://i0.wp.com/www.otakupt.com/wp-content/uploads/2022/08/Bleach-Thousand-Year-Blood-War-anime-visual-2-1.jpg?resize=1280%2C1809&ssl=1'
-        },
-        {
-            id: 3, titulo: 'JoJo\'s Bizarre Adventure', url: 'https://jovemnerd.com.br/wp-content/uploads/2022/03/jogos-bizarre-adventure-stone-ocean.jpg'
-        }
-    ])
+    const [animeSelecionado, setAnimeSelecionado] = useState<Anime|null>(null);
+    const [email, setEmail] = useState("");
+    const [erro, setErro] = useState("");
+    const [animes, setAnimes] = useState<Anime[]>([]);
 
-    const [animeSelecionado, setAnimeSelecionado] = useState<Anime|null>(null)
+    useEffect(() => {
+        Axios.get('http://localhost:3001/animes').then(response => {
+            setAnimes(response.data)
+        }).catch(error => {
+            console.log(error)
+        })
+    }, [])
 
     const router = useRouter()
 
     const handleVotacao = () => {
-        router.push('/resultado')
+        Axios.post('http://localhost:3001/votacao', {email, animeId: animeSelecionado?.id})
+        .then(success => {
+            router.push('/resultado')
+        }).catch(erro => {
+            setErro('Não foi possível realizar sua votação. Verifique os campos novamente ou tente novamente em alguns minutos!')
+        })
     }
 
   return (
@@ -55,8 +60,8 @@ export default function Home() {
                         <div id={styles.voto_container}>
                             <h1>Você votou em: <br/><b>{animeSelecionado.titulo}</b></h1>
                             <p>Informe o seu email para confirmar seu voto: </p>
-                            <input type="email" name="email" placeholder="Digite seu email"/>
-                            <p id={styles.voto_erro}>Informe um email!</p>
+                            <input type="email" name="email" placeholder="Digite seu email" onChange={(e) => setEmail(e.target.value)}/>
+                            {erro && <p id={styles.voto_erro}>{erro}</p>}
                             <div id={styles.voto_opc}>
                                 <button id={styles.btn_voltar} onClick={handleVotacao}>Votar</button>
                                 <button id={styles.btn_cancelar} onClick={() => setAnimeSelecionado(null)}>Cancelar</button>
