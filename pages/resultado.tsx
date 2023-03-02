@@ -63,7 +63,7 @@ export default function ResultadoPage() {
             <h2>Últimos Votos</h2>
             <div id={styles.votos}>
                 <ul>
-                    { votos.map(voto => <li>{voto.email} - {voto.anime.titulo}</li>)}
+                    { votos.map(voto => <li key={voto.id}>{voto.email} - {voto.anime.titulo}</li>)}
                 </ul>
             </div>
        </MainTemplate>

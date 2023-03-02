@@ -7,7 +7,17 @@ import styles from './../styles/Home.module.css'
 import { useRouter } from 'next/router'
 import Axios from 'axios';
 
-export default  function Home() {
+export async function getStaticProps() {
+
+    const response = await Axios.get('http://localhost:3001/animes')
+
+    return {
+        props: {anime: response.data},
+        revalidate: 3600
+    }
+}
+
+export default  function Home(props: any) {
 
     const [animeSelecionado, setAnimeSelecionado] = useState<Anime|null>(null);
     const [email, setEmail] = useState("");
@@ -22,6 +32,7 @@ export default  function Home() {
         })
     }, [])
 
+    
     const router = useRouter()
 
     const handleVotacao = () => {
@@ -42,9 +53,9 @@ export default  function Home() {
 
             <div id={styles.animes}>
 
-                {animes.map((anime) => (
+                {animes.map((anime: Anime) => (
                     // eslint-disable-next-line react/jsx-key
-                    <div className={styles.anime}>
+                    <div key={anime.id} className={styles.anime}>
                         <img src={anime.url} />
                         <h1>{anime.titulo}</h1>
                         <button onClick={() => setAnimeSelecionado(anime)}>Votar</button>
